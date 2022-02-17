@@ -9,7 +9,7 @@ const searchUrl ='https://api.unsplash.com/search/photos/';
 function App() {
     const [loading, setLoading]=useState(false)
     const [photos, setPhotos]=useState([]);
-    const [page, setPage]=useState(1);
+    const [page, setPage]=useState(1); //docs
     const [query, setQuery]=useState('');
 
     const fetchImages =async ()=>{
@@ -47,46 +47,25 @@ function App() {
             console.log(error);
         }
     }
-    useEffect(()=>{
+
+ useEffect(()=>{
         setLoading(true)
         fetchImages()
-    },[page])
-
-    useEffect(()=>{
-        // console.log(`innerHeight ${window.innerHeight}`);
-        // console.log(`scrollY ${window.scrollY}`);
-        // console.log(`odyHeight ${document.body.scrollHeight}`);
-
-        const event = window.addEventListener('scroll',()=>{
-            // sa nu suprapun loading cu fetch "!loading"
-            if ((loading &&
-                window.innerHeight + window.scrollY) >= document.body.scrollHeight - 2){
-                // console.log('it worked');
-                // ? DC inaltimea este mai mare decat atunci fetch
-                setPage((oldPage)=>{
-                    return oldPage + 1;
-                })
-            }
-        });
-        // e bine sa scoti ev linst
-        return ()=>window.removeEventListener('scroll', event)
     },[])
 
     const handleSubmit =(e)=>{
         e.preventDefault();
-        if (page === 1) {
-            fetchImages();
-        }
-        setPage(1);
+        setLoading(true)
+        fetchImages();
+        setQuery('')
     }
 
     if (loading){
-        return <div>Loading ..</div>
+        return <div className='mt-20 text-center'>Loading ..</div>
     }
 
   return (
     <main className=" min-h-screen">
-        <h1 className="text-3xl font-bold underline text-center">Search for photos</h1>
         <section className='my-12 flex items-center justify-center'>
             <form className='border-b-2 border-gray-400'>
                 <input type="text" placeholder='search' className='focus:outline-none' value={query} onChange={(e)=>
@@ -96,16 +75,13 @@ function App() {
                 </button>
             </form>
         </section>
-        <section>
+        <section className='my-8'>
             <ul className='flex flex-col md:flex-row flex-wrap justify-center items-center gap-2'>
                 {photos.map((image, id)=>{
-                    // console.log(image);
                     return <Photos key={image.id} {...image} />
                 })}
             </ul>
-            {loading && <h2>Loading .......</h2>}
         </section>
-
     </main>
   );
 }
